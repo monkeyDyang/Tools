@@ -1,0 +1,28 @@
+
+y
+java:S1104"WMake allFileList a static final constant or non-public and provide accessors if needed.(è…Ûøÿÿÿÿ8–ææÊ®1
+S
+java:S1444"1Make this "public static allFileList" field final(è…Ûøÿÿÿÿ8˜ææÊ®1
+?
+java:S2386"Make this member "protected".(è…Ûøÿÿÿÿ8„ìÊ®1
+^
+java:S1075"ARefactor your code to get this URI from a customizable parameter.(±¬íª8·ææÊ®1
+[
+java:S3400P"9Remove this method and declare a constant for this value.(Ö§”Óşÿÿÿÿ8ÈææÊ®1
+H
+java:S1172O"+Remove this unused method parameter "name".(’ããà8ÊææÊ®1
+C
+java:S1075`"&Remove this hard-coded path-delimiter.( š¡®8ÎææÊ®1
+X	java:S125e"<This block of commented-out lines of code should be removed.(€äö£8ÚÏïÊ®1
+[
+java:S3400s"9Remove this method and declare a constant for this value.(Ö§”Óşÿÿÿÿ8ÓææÊ®1
+M
+java:S1172r"+Remove this unused method parameter "name".(À”õËùÿÿÿÿ8ÕææÊ®1
+c
+java:S2147"ECombine this catch with the one at line 127, which has the same body.(ï­£Ä8–°ëÊ®1
+L
+java:S1128"/Remove this unused import 'java.util.Iterator'.(¥ÍòÕ8£³îÊ®1
+W
+java:S1144O":Remove this unused private "handleCameraPhotoName" method.(’ããà8ÛææÊ®1
+`
+java:S1144r">Remove this unused private "handleScreenshotPhotoName" method.(À”õËùÿÿÿÿ8İææÊ®1

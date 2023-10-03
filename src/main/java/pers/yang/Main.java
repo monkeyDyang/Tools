@@ -201,6 +201,9 @@ public class Main {
             // 移动重复文件到指定目录
             String path = BASE_PATH + File.separator + "Repeat" + File.separator + file.getName();
             File repeatFile = new File(path);
+            if (!repeatFile.getParentFile().exists() && (!repeatFile.getParentFile().mkdirs())) {
+                StaticLog.error("Dictionary： {} create fail.");
+            }
             if (!file.renameTo(repeatFile)) {
                 StaticLog.error("Rename fail.");
             }
