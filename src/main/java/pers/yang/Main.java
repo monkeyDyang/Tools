@@ -61,6 +61,17 @@ public class Main {
             if (file.getName().startsWith(XIAOMI_PREFIX)) {
                 handleCameraPhoto(file);
             }
+            // 截图移动到指定文件夹下
+            if (file.getName().startsWith("Screenshot")) {
+                String path = BASE_PATH + File.separator + "Screenshot" + File.separator + file.getName();
+                File screenshot = new File(path);
+                if (!screenshot.getParentFile().exists() && (!screenshot.getParentFile().mkdirs())) {
+                    StaticLog.error("Dictionary /Screenshot create fail.");
+                }
+                if (!file.renameTo(screenshot)) {
+                    StaticLog.error("Rename fail.");
+                }
+            }
         }
     }
 
@@ -107,8 +118,15 @@ public class Main {
         // 获取文件名中的时间
         String timeString = fileName.replace(XIAOMI_PREFIX, "");
         String suffix = timeString.substring(timeString.lastIndexOf("."));
-        timeString = timeString.replace(suffix, "");
-        DateTime dateTime = DateUtil.parse(timeString, "yyyyMMddHHmmss");
+        // 有的照片会多一个 01
+        timeString = timeString.replace(suffix, "").substring(0, 14);
+        DateTime dateTime;
+        try {
+            dateTime = DateUtil.parse(timeString, "yyyyMMddHHmmss");
+        } catch (Exception e) {
+            StaticLog.warn("Skip file: {}", fileName);
+            return;
+        }
 
         // 获取图片信息中的时间信息
         Date exifTime = getImageExifTime(file);
@@ -131,8 +149,15 @@ public class Main {
         String timeStampString = name.replace(WECHAT_PREFIX, "");
         // 去除后缀
         String suffix = timeStampString.substring(timeStampString.lastIndexOf("."));
-        timeStampString = timeStampString.replace(suffix, "");
-        long timeStampLong = Long.parseLong(timeStampString);
+        // 取十三位的时间戳，有的图片会存在(1)
+        timeStampString = timeStampString.replace(suffix, "").substring(0, 13);
+        long timeStampLong;
+        try {
+            timeStampLong = Long.parseLong(timeStampString);
+        } catch (Exception ex) {
+            StaticLog.warn("Skip file: {}", name);
+            return;
+        }
         Date fileNameTime = new Date(timeStampLong);
 
         // 获取图片信息中的时间信息
@@ -157,7 +182,13 @@ public class Main {
         // 去除后缀
         String suffix = timeStampString.substring(timeStampString.lastIndexOf("."));
         timeStampString = timeStampString.replace(suffix, "");
-        long timeStampLong = Long.parseLong(timeStampString);
+        long timeStampLong;
+        try {
+            timeStampLong = Long.parseLong(timeStampString);
+        } catch (Exception ex) {
+            StaticLog.warn("Skip file: {}", name);
+            return;
+        }
         Date fileNameTime = new Date(timeStampLong);
 
         // 获取图片信息中的时间信息
@@ -192,7 +223,7 @@ public class Main {
         String newFileName = BASE_PATH + File.separator + dictionary + File.separator + dateString + suffix;
         File newFile = new File(newFileName);
         if (!newFile.getParentFile().exists() && (!newFile.getParentFile().mkdirs())) {
-            StaticLog.error("Dictionary： {} create fail.");
+            StaticLog.error("Dictionary： /{} create fail.", dictionary);
         }
 
         //  确保新的文件名不存在
@@ -202,7 +233,7 @@ public class Main {
             String path = BASE_PATH + File.separator + "Repeat" + File.separator + file.getName();
             File repeatFile = new File(path);
             if (!repeatFile.getParentFile().exists() && (!repeatFile.getParentFile().mkdirs())) {
-                StaticLog.error("Dictionary： {} create fail.");
+                StaticLog.error("Dictionary /Repeat create fail.");
             }
             if (!file.renameTo(repeatFile)) {
                 StaticLog.error("Rename fail.");
