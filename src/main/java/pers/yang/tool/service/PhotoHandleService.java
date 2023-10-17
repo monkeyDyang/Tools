@@ -4,16 +4,20 @@ import java.io.File;
 import java.util.Date;
 
 /**
- * Description:
+ * 图片处理服务
  *
  * @author YangYang
  * @version 1.0.0
  * @date 2023-10-10 20:01:57
  */
-public interface ReNamePhotoService {
+public interface PhotoHandleService {
 
     /**
      * 处理照片
+     * <p>
+     * 1. 获取真实拍摄时间
+     * 2. 文件重命名
+     * 3. 移动到所属月份的文件夹下
      *
      * @param file 文件
      */

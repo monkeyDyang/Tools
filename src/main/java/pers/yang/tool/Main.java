@@ -2,9 +2,9 @@ package pers.yang.tool;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.log.StaticLog;
-import pers.yang.tool.service.ReNamePhotoService;
-import pers.yang.tool.service.impl.PhoneCameraServiceImpl;
-import pers.yang.tool.service.impl.WeChatPhotoServiceImpl;
+import pers.yang.tool.service.PhotoHandleService;
+import pers.yang.tool.service.impl.PhoneCameraHandleServiceImpl;
+import pers.yang.tool.service.impl.WeChatPhotoHandleServiceImpl;
 
 import java.io.File;
 import java.util.HashMap;
@@ -39,12 +39,12 @@ public class Main {
      */
     public static final String WECHAT_CAMERA_PREFIX = "wx_camera_";
 
-    private static final Map<String, ReNamePhotoService> photoServiceMap = new HashMap<>();
+    private static final Map<String, PhotoHandleService> photoServiceMap = new HashMap<>();
 
     static {
-        photoServiceMap.put(WECHAT_PREFIX, new WeChatPhotoServiceImpl());
-        photoServiceMap.put(XIAOMI_PREFIX, new PhoneCameraServiceImpl());
-        photoServiceMap.put(WECHAT_CAMERA_PREFIX, new PhoneCameraServiceImpl());
+        photoServiceMap.put(WECHAT_PREFIX, new WeChatPhotoHandleServiceImpl());
+        photoServiceMap.put(XIAOMI_PREFIX, new PhoneCameraHandleServiceImpl());
+        photoServiceMap.put(WECHAT_CAMERA_PREFIX, new PhoneCameraHandleServiceImpl());
     }
 
     public static void main(String[] args) {

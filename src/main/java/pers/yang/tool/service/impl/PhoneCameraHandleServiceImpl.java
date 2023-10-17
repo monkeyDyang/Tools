@@ -1,8 +1,8 @@
 package pers.yang.tool.service.impl;
 
 import cn.hutool.core.date.DateUtil;
-import pers.yang.tool.service.AbstractReNamePhotoService;
-import pers.yang.tool.service.ReNamePhotoService;
+import pers.yang.tool.service.AbstractPhotoHandleService;
+import pers.yang.tool.service.PhotoHandleService;
 
 import java.util.Date;
 
@@ -13,7 +13,7 @@ import java.util.Date;
  * @version 1.0.0
  * @date 2023-10-10 21:38:18
  */
-public class PhoneCameraServiceImpl extends AbstractReNamePhotoService implements ReNamePhotoService {
+public class PhoneCameraHandleServiceImpl extends AbstractPhotoHandleService implements PhotoHandleService {
 
     @Override
     public Date handlerFileName(String fileName) {

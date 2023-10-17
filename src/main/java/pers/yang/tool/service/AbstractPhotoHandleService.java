@@ -3,19 +3,21 @@ package pers.yang.tool.service;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.log.StaticLog;
-import pers.yang.tool.ImageUtil;
+import pers.yang.tool.util.ImageUtil;
 
 import java.io.File;
 import java.util.Date;
 
 /**
- * Description:
+ * 重命名服务的抽象类
+ * <p>
+ * - 实现重命名服务的公共方法
  *
  * @author YangYang
  * @version 1.0.0
  * @date 2023-10-10 21:43:12
  */
-public abstract class AbstractReNamePhotoService implements ReNamePhotoService {
+public abstract class AbstractPhotoHandleService implements PhotoHandleService {
 
     @Override
     public void handlePhoto(File file) {
@@ -63,8 +65,11 @@ public abstract class AbstractReNamePhotoService implements ReNamePhotoService {
             StaticLog.error("Dictionary： /{} create fail.", dictionary);
         }
 
-        //  确保新的文件名不存在
-        if (newFile.exists()) {
+        // 压缩图片
+        ImageUtil.compress(file, newFile);
+
+        //  文件已存在，并且是重复文件
+        if (newFile.exists() && ImageUtil.compare(file, newFile)) {
             StaticLog.error("{} exists, skip it.", newFileName);
             // 移动重复文件到指定目录
             String path = file.getParentFile() + File.separator + "Repeat" + File.separator + file.getName();
@@ -77,6 +82,7 @@ public abstract class AbstractReNamePhotoService implements ReNamePhotoService {
             }
             return;
         }
+        // 重命名
         FileUtil.rename(file, newFileName, true);
     }
 }
