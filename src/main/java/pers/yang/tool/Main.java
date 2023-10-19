@@ -44,7 +44,7 @@ public class Main {
     static {
         photoServiceMap.put(WECHAT_PREFIX, new WeChatPhotoHandleServiceImpl());
         photoServiceMap.put(XIAOMI_PREFIX, new PhoneCameraHandleServiceImpl());
-        photoServiceMap.put(WECHAT_CAMERA_PREFIX, new PhoneCameraHandleServiceImpl());
+        photoServiceMap.put(WECHAT_CAMERA_PREFIX, new WeChatCameraHandleServiceImpl());
     }
 
     public static void main(String[] args) {
