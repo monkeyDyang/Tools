@@ -6,6 +6,8 @@ import cn.hutool.log.StaticLog;
 import pers.yang.tool.util.ImageUtil;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Date;
 
 /**
@@ -20,11 +22,18 @@ import java.util.Date;
 public abstract class AbstractPhotoHandleService implements PhotoHandleService {
 
     @Override
-    public void handlePhoto(File file) {
-        // 获取真实的拍摄时间
-        Date rightTime = getRightTime(file);
-        // 移动并重命名文件
-        moveAndReNamePhoto(file, rightTime);
+    public void handlePhoto(File srcFile) {
+        // 获取新文件
+        File newFile = getNewFile(srcFile);
+
+        // 压缩文件
+        ImageUtil.compress(srcFile, newFile);
+
+        // 保留exif信息
+        ImageUtil.saveExif(srcFile, newFile);
+
+        // 处理源文件
+        handleSrcFile(srcFile);
     }
 
     /**
@@ -43,46 +52,67 @@ public abstract class AbstractPhotoHandleService implements PhotoHandleService {
     }
 
     /**
-     * 移动和重新命名照片
+     * 创建新的文件
      *
-     * @param file      文件
-     * @param rightTime 真实时间
+     * @param srcFile 源文件
+     * @return {@link File} 新文件
      */
-    protected void moveAndReNamePhoto(File file, Date rightTime) {
+    protected File getNewFile(File srcFile) {
+        // 获取真实的拍摄时间
+        Date rightTime = getRightTime(srcFile);
+
         // 获取年份
         int year = DateUtil.year(rightTime);
         // 获取月份
         int month = DateUtil.month(rightTime) + 1;
         String dictionary = year + "年-" + month + "月";
-        // 获取最终的日期时间
-        String newFileName = DateUtil.format(rightTime, "yyyy-MM-dd_HH-mm-ss") + "." + FileUtil.getSuffix(file);
-
-        // 重命名文件并移动到对应月份文件夹下
-        String newFilePath = file.getParentFile() + File.separator + dictionary + File.separator + newFileName;
-
+        // 获取文件名
+        String newFileName = DateUtil.format(rightTime, "yyyy-MM-dd_HH-mm-ss") + "." + FileUtil.getSuffix(srcFile);
+        // 文件全路径
+        String newFilePath = srcFile.getParentFile() + File.separator + dictionary + File.separator + newFileName;
         File newFile = FileUtil.file(newFilePath);
         if (!newFile.getParentFile().exists() && (!newFile.getParentFile().mkdirs())) {
             StaticLog.error("Dictionary： /{} create fail.", dictionary);
         }
+        // 处理重复文件
+        handleRepeatPhoto(srcFile, newFile);
+        return newFile;
+    }
 
-        // 压缩图片
-        ImageUtil.compress(file, newFile);
-
+    /**
+     * 处理重复照片
+     * <p>
+     * 将重复的文件移动到指定的目录下
+     *
+     * @param srcFile 源文件
+     * @param newFile 新文件
+     */
+    protected void handleRepeatPhoto(File srcFile, File newFile) {
         //  文件已存在，并且是重复文件
-        if (newFile.exists() && ImageUtil.compare(file, newFile)) {
-            StaticLog.error("{} exists, skip it.", newFileName);
+        if (newFile.exists() && ImageUtil.compare(srcFile, newFile)) {
+            StaticLog.warn("{} exists, skip it.", newFile.getName());
             // 移动重复文件到指定目录
-            String path = file.getParentFile() + File.separator + "Repeat" + File.separator + file.getName();
+            String path = srcFile.getParentFile() + File.separator + "Repeat" + File.separator + srcFile.getName();
             File repeatFile = new File(path);
             if (!repeatFile.getParentFile().exists() && (!repeatFile.getParentFile().mkdirs())) {
                 StaticLog.error("Dictionary /Repeat create fail.");
             }
-            if (!file.renameTo(repeatFile)) {
+            if (!srcFile.renameTo(repeatFile)) {
                 StaticLog.error("Rename fail.");
             }
-            return;
         }
-        // 重命名
-        FileUtil.rename(file, newFileName, true);
+    }
+
+    /**
+     * 处理源文件
+     *
+     * @param srcFile 文件
+     */
+    protected void handleSrcFile(File srcFile) {
+        try {
+            Files.deleteIfExists(srcFile.toPath());
+        } catch (IOException e) {
+            StaticLog.error("File {} Delete fail.", srcFile.getName(), e);
+        }
     }
 }
