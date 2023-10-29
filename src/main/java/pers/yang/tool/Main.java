@@ -4,6 +4,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.log.StaticLog;
 import pers.yang.tool.service.PhotoHandleService;
 import pers.yang.tool.service.impl.PhoneCameraHandleServiceImpl;
+import pers.yang.tool.service.impl.WeChatCameraHandleServiceImpl;
 import pers.yang.tool.service.impl.WeChatPhotoHandleServiceImpl;
 
 import java.io.File;
@@ -22,8 +23,9 @@ public class Main {
     /**
      * 基本路径
      */
-    private static final String BASE_PATH = "D:\\本地资源库\\果果\\照片";
-//    private static final String BASE_PATH = "D:\\Files\\TestImage";
+//    private static final String BASE_PATH = "D:\\本地资源库\\果果\\照片";
+//    private static final String BASE_PATH = "D:\\本地资源库\\小君";
+    private static final String BASE_PATH = "D:\\Files\\TestImage";
 
     /**
      * 微信前缀
@@ -53,15 +55,15 @@ public class Main {
         for (File file : allFileList) {
             // 处理微信图片
             if (file.getName().startsWith(WECHAT_PREFIX)) {
-                photoServiceMap.get(WECHAT_PREFIX).handlePhoto(file);
+                photoServiceMap.get(WECHAT_PREFIX).handlePhoto(file, true);
             }
             // 处理微信相机拍摄的图片
             if (file.getName().startsWith(WECHAT_CAMERA_PREFIX)) {
-                photoServiceMap.get(WECHAT_CAMERA_PREFIX).handlePhoto(file);
+                photoServiceMap.get(WECHAT_CAMERA_PREFIX).handlePhoto(file, true);
             }
             // 处理小米图片
             if (file.getName().startsWith(XIAOMI_PREFIX)) {
-                photoServiceMap.get(XIAOMI_PREFIX).handlePhoto(file);
+                photoServiceMap.get(XIAOMI_PREFIX).handlePhoto(file, true);
             }
             // 截图移动到指定文件夹下
             if (file.getName().startsWith("Screenshot")) {

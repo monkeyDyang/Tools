@@ -22,12 +22,14 @@ import java.util.Date;
 public abstract class AbstractPhotoHandleService implements PhotoHandleService {
 
     @Override
-    public void handlePhoto(File srcFile) {
+    public void handlePhoto(File srcFile, boolean isCompress) {
         // 获取新文件
         File newFile = getNewFile(srcFile);
 
         // 压缩文件
-        ImageUtil.compress(srcFile, newFile);
+        if (isCompress) {
+            ImageUtil.compress(srcFile, newFile);
+        }
 
         // 保留exif信息
         ImageUtil.saveExif(srcFile, newFile);

@@ -13,15 +13,17 @@ import java.util.Date;
 public interface PhotoHandleService {
 
     /**
+     * 手柄照片
      * 处理照片
      * <p>
      * 1. 获取真实拍摄时间
      * 2. 文件重命名
      * 3. 移动到所属月份的文件夹下
      *
-     * @param file 文件
+     * @param file       文件
+     * @param isCompress 是否压缩图片
      */
-    void handlePhoto(File file);
+    void handlePhoto(File file, boolean isCompress);
 
     /**
      * 从文件名中提取拍摄时间
