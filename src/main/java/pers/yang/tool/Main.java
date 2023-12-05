@@ -55,15 +55,15 @@ public class Main {
         for (File file : allFileList) {
             // 处理微信图片
             if (file.getName().startsWith(WECHAT_PREFIX)) {
-                photoServiceMap.get(WECHAT_PREFIX).handlePhoto(file, true);
+                photoServiceMap.get(WECHAT_PREFIX).handlePhoto(file, false);
             }
             // 处理微信相机拍摄的图片
             if (file.getName().startsWith(WECHAT_CAMERA_PREFIX)) {
-                photoServiceMap.get(WECHAT_CAMERA_PREFIX).handlePhoto(file, true);
+                photoServiceMap.get(WECHAT_CAMERA_PREFIX).handlePhoto(file, false);
             }
             // 处理小米图片
             if (file.getName().startsWith(XIAOMI_PREFIX)) {
-                photoServiceMap.get(XIAOMI_PREFIX).handlePhoto(file, true);
+                photoServiceMap.get(XIAOMI_PREFIX).handlePhoto(file, false);
             }
             // 截图移动到指定文件夹下
             if (file.getName().startsWith("Screenshot")) {
