@@ -23,19 +23,26 @@ public abstract class AbstractPhotoHandleService implements PhotoHandleService {
 
     @Override
     public void handlePhoto(File srcFile, boolean isCompress) {
-        // 获取新文件
-        File newFile = getNewFile(srcFile);
+        try {
+            // 获取新文件
+            File newFile = getNewFile(srcFile);
 
-        // 压缩文件
-        if (isCompress) {
-            ImageUtil.compress(srcFile, newFile);
+            // 压缩文件
+            if (isCompress) {
+                ImageUtil.compress(srcFile, newFile);
+            } else {
+                FileUtil.copy(srcFile, newFile, true);
+            }
+
+            // 保留exif信息
+            ImageUtil.saveExif(srcFile, newFile);
+
+            // 处理源文件
+            handleSrcFile(srcFile);
+        } catch (Exception e) {
+            StaticLog.error(e);
         }
 
-        // 保留exif信息
-        ImageUtil.saveExif(srcFile, newFile);
-
-        // 处理源文件
-        handleSrcFile(srcFile);
     }
 
     /**
@@ -92,7 +99,6 @@ public abstract class AbstractPhotoHandleService implements PhotoHandleService {
     protected void handleRepeatPhoto(File srcFile, File newFile) {
         //  文件已存在，并且是重复文件
         if (newFile.exists() && ImageUtil.compare(srcFile, newFile)) {
-            StaticLog.warn("{} exists, skip it.", newFile.getName());
             // 移动重复文件到指定目录
             String path = srcFile.getParentFile() + File.separator + "Repeat" + File.separator + srcFile.getName();
             File repeatFile = new File(path);
@@ -102,6 +108,8 @@ public abstract class AbstractPhotoHandleService implements PhotoHandleService {
             if (!srcFile.renameTo(repeatFile)) {
                 StaticLog.error("Rename fail.");
             }
+            StaticLog.warn("{} exists, skip it.", newFile.getName());
+            throw new RuntimeException("Repeat photo, skip it.");
         }
     }
 

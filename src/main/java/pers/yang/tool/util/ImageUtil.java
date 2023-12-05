@@ -3,6 +3,7 @@ package pers.yang.tool.util;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.img.ImgUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.log.StaticLog;
 import com.drew.imaging.jpeg.JpegMetadataReader;
@@ -80,17 +81,20 @@ public class ImageUtil {
      * @param outFile 目标文件，最后生成的文件
      */
     public static void saveExif(File srcFile, File outFile) {
-        // 创建一个临时文件，复制压缩后的文件
-        File tempFile = FileUtil.createTempFile();
-        FileUtil.copy(outFile, tempFile, true);
-        // 创建输出文件的输出流
-        BufferedOutputStream outputStream = FileUtil.getOutputStream(outFile);
-        OutputStream os = new BufferedOutputStream(outputStream);
         // 从压缩前的图片中获取exif信息，如果发生异常，则跳过后续操作
         try {
             // 获取exif信息
             TiffOutputSet outputSet = new TiffOutputSet();
             JpegImageMetadata srcMetadata = (JpegImageMetadata) Imaging.getMetadata(srcFile);
+            if (ObjectUtil.isEmpty(srcMetadata)) {
+                return;
+            }
+            // 创建一个临时文件，复制压缩后的文件
+            File tempFile = FileUtil.createTempFile();
+            FileUtil.copy(outFile, tempFile, true);
+            // 创建输出文件的输出流
+            BufferedOutputStream outputStream = FileUtil.getOutputStream(outFile);
+            OutputStream os = new BufferedOutputStream(outputStream);
             List<TiffOutputDirectory> srcList = srcMetadata.getExif().getOutputSet().getDirectories();
             for (TiffOutputDirectory td : srcList) {
                 outputSet.addDirectory(td);
